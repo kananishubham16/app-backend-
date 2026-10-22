@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from pptx import Presentation
 from pptx.util import Inches, Pt
@@ -9,6 +10,10 @@ def fill_deck():
     pptx_path = "SFIC 2026 Synopsis Presentation Template.pptx"
     prs = Presentation(pptx_path)
 
+    # Universally compatible standard system fonts
+    FONT_HEADING = "Arial"
+    FONT_BODY = "Calibri"
+
     # Colors
     c_white = RGBColor(255, 255, 255)
     c_slate = RGBColor(203, 213, 225)
@@ -18,6 +23,19 @@ def fill_deck():
     c_card_bg = RGBColor(30, 41, 59)
     c_card_border = RGBColor(51, 65, 85)
     c_green = RGBColor(34, 197, 94)
+
+    def style_para(p, font_name, size_pt, color_rgb=None, bold=False):
+        p.font.name = font_name
+        p.font.size = Pt(size_pt)
+        p.font.bold = bold
+        if color_rgb is not None:
+            p.font.color.rgb = color_rgb
+        for r in p.runs:
+            r.font.name = font_name
+            r.font.size = Pt(size_pt)
+            r.font.bold = bold
+            if color_rgb is not None:
+                r.font.color.rgb = color_rgb
 
     # -------------------------------------------------------------
     # SLIDE 1: Title & Team Metadata
@@ -30,49 +48,31 @@ def fill_deck():
         if "PROBLEM STATEMENT CODE:" in text:
             s.text_frame.text = "PROBLEM STATEMENT CODE: PS000060"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_orange
-                p.font.size = Pt(11)
-                p.font.bold = True
-        elif "[Insert Your Project" in text:
+                style_para(p, FONT_HEADING, 11, c_orange, bold=True)
+        elif "[Insert Your Project" in text or "LEARNING SETU" in text:
             s.text_frame.text = "LEARNING SETU (લર્નિંગ સેતુ)"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(32)
-                p.font.bold = True
-        elif "[Provide a crisp one-sentence" in text:
+                style_para(p, FONT_HEADING, 30, c_white, bold=True)
+        elif "[Provide a crisp one-sentence" in text or "closing foundational learning gaps" in text:
             s.text_frame.text = "A smart tracking and remedial action system closing foundational learning gaps in primary schools through automated sub-topic diagnosis, adaptive quizzes, and bilingual parent-teacher synchronization."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(13)
-        elif "[TMXXXXXX]" in text:
+                style_para(p, FONT_BODY, 13, c_slate, bold=False)
+        elif "[TMXXXXXX]" in text or "TM-SFIC-" in text:
             s.text_frame.text = "TM-SFIC-0060"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(12)
-                p.font.bold = True
-        elif "[College / School /" in text:
+                style_para(p, FONT_HEADING, 12, c_white, bold=True)
+        elif "[College / School /" in text or "College / University Track" in text:
             s.text_frame.text = "College / University Track"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(12)
-        elif "[Name of College" in text:
+                style_para(p, FONT_BODY, 12, c_white, bold=False)
+        elif "[Name of College" in text or "Gujarat Technological University" in text:
             s.text_frame.text = "Gujarat Technological University / Govt. Engineering College, Gandhinagar"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(11)
-        elif "[Leader Full Name]" in text:
+                style_para(p, FONT_BODY, 11, c_white, bold=False)
+        elif "[Leader Full Name]" in text or "Shubham Kanani" in text:
             s.text_frame.text = "Shubham Kanani"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(12)
-                p.font.bold = True
+                style_para(p, FONT_HEADING, 12, c_white, bold=True)
 
     # -------------------------------------------------------------
     # SLIDE 2: Challenge Definition
@@ -82,30 +82,22 @@ def fill_deck():
         if not s.has_text_frame:
             continue
         text = s.text_frame.text
-        if "[Describe the exact bottleneck" in text:
+        if "[Describe the exact bottleneck" in text or "Primary school teachers in Gujarat" in text:
             s.text_frame.text = "Primary school teachers in Gujarat handle 40-50 students across multiple grades with no automated way to detect conceptual sub-topic gaps (e.g. distinguishing overall Math deficiency from a specific borrowing failure in subtraction). Consequently, learning gaps compound undetected until annual summative exams."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(11)
+                style_para(p, FONT_BODY, 11, c_slate, bold=False)
         elif "Evidence: [Quantify" in text or "Evidence:" in text:
             s.text_frame.text = "Evidence & Ground Reality: Over 48% of Grade 3-5 children in rural schools fail basic subtraction or Gujarati reading (ASER/NAS benchmarks). Teachers spend 6-8 manual hours per week collating paper scores without actionable gap-to-remedial activity mapping."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(10.5)
-        elif "[Identify primary beneficiaries" in text:
-            s.text_frame.text = "Target Beneficiaries:\n• Primary Students (Grades 1-5): Receive timely, non-stigmatizing micro-practice before conceptual deficits widen.\n• Primary Teachers: Automated diagnosis reduces assessment overhead by 70%.\n• Parents: Overcome literacy barriers via automated Gujarati SMS/WhatsApp home-practice updates.\n• Principals & BRCs: Real-time cluster mastery analytics replace delayed paper audits."
+                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+        elif "[Identify primary beneficiaries" in text or "Target Beneficiaries:" in text:
+            s.text_frame.text = "Target Beneficiaries:\n• Primary Students (Grades 1-5): Receive timely, non-stigmatizing micro-practice before conceptual deficits widen.\n• Primary Teachers: Automated diagnosis reduces assessment overhead by 70%.\n• Parents: Overcome literacy barriers via automated Gujarati SMS home-practice updates.\n• Principals & BRCs: Real-time cluster mastery analytics replace delayed paper audits."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(10.5)
-        elif "Existing Gap: [Explain" in text or "Existing Gap:" in text:
+                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+        elif "Existing Gap: [Explain" in text or "Existing Gap:" in text or "Existing Market Gaps:" in text:
             s.text_frame.text = "Existing Market Gaps: Commercial EdTech (Byju's, Khan Academy) requires high-end smartphones, strong internet, and recurring subscriptions. State administrative portals (e.g. VSK) track macro census data but lack a micro-actionable teacher-student-parent remediation loop."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(10.5)
+                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
 
     # -------------------------------------------------------------
     # SLIDE 3: Solution Approach & Novelty
@@ -115,43 +107,39 @@ def fill_deck():
         if not s.has_text_frame:
             continue
         text = s.text_frame.text
-        if "[State your proposed digital/hardware" in text:
+        if "[State your proposed digital/hardware" in text or "Learning Setu is a bilingual" in text:
             s.text_frame.text = "Learning Setu is a bilingual, offline-first mobile and web application that automates the complete remedial cycle: Diagnosing sub-topic gaps (<40%), generating targeted remedial activities, verifying recovery via 5-question supervised mini-quizzes, and synchronizing parents in Gujarati."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(11)
-        elif "[What makes your approach proprietary" in text:
+                style_para(p, FONT_BODY, 11, c_slate, bold=False)
+        elif "[What makes your approach proprietary" in text or "Closed-Loop Verification:" in text:
             s.text_frame.text = "• Closed-Loop Verification: Remedial tasks are only marked complete when a student passes a targeted mini-quiz (>=70%), preventing unverified check-the-box remediation.\n• Bilingual Ecosystem: 100% Gujarati + English localization across UI and automated SMS alerts.\n• 4-Role Unified Architecture: Teacher, Principal, BRC, and Parent coordinated seamlessly."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(10.5)
-        elif "[Key engineering advantage" in text:
+                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+        elif "[Key engineering advantage" in text or "Deterministic Rule Engine" in text:
             s.text_frame.text = "• Deterministic Rule Engine + Offline SQLite: Functions in zero-connectivity rural classrooms.\n• Hybrid AI Diagnostics: Augments deterministic rules with Google Gemini 1.5 Flash for nuanced pedagogical advice.\n• TextBee SMS Gateway: Auto-dispatches bilingual SMS without parents needing smartphones or app installs."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(10.5)
-        elif "[Direct societal welfare delivery" in text:
+                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+        elif "[Direct societal welfare delivery" in text or "100% open-source, zero recurring" in text:
             s.text_frame.text = "100% open-source, zero recurring software license cost for Gujarat primary schools. Directly accelerates NIPUN Bharat Foundational Literacy and Numeracy (FLN) goals and empowers marginalized parents with transparent, accessible Gujarati progress updates."
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(10.5)
-        elif "Video Link : http://" in text:
+                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+        elif "Video Link : http://" in text or "GitHub & Live Demo:" in text:
             s.text_frame.text = "GitHub & Live Demo: https://github.com/kananishubham16/app (Backend: kananishubham16/app-backend-)"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_blue
-                p.font.size = Pt(10)
-                p.font.bold = True
+                style_para(p, FONT_HEADING, 10, c_blue, bold=True)
 
     # -------------------------------------------------------------
     # Helper to add styled cards on slides 4, 5, 6, 7
     # -------------------------------------------------------------
+    # Clean up any previously added auto shapes (shape_type == 1) on slides 4, 5, 6, 7
+    for slide_idx in [3, 4, 5, 6]:
+        s = prs.slides[slide_idx]
+        for sh in list(s.shapes):
+            if sh.shape_type == 1:
+                sp = sh._element
+                sp.getparent().remove(sp)
+
     def add_card(slide, left, top, width, height, title, items, badge_text=None, accent_color=c_blue):
-        # Card shape
         shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
         shape.fill.solid()
         shape.fill.fore_color.rgb = c_card_bg
@@ -168,20 +156,15 @@ def fill_deck():
         # Title paragraph
         p0 = tf.paragraphs[0]
         p0.text = title
-        p0.font.name = "Plus Jakarta Sans"
-        p0.font.size = Pt(14)
-        p0.font.bold = True
-        p0.font.color.rgb = accent_color
         p0.space_after = Pt(8)
+        style_para(p0, FONT_HEADING, 13, accent_color, bold=True)
 
         # Items
         for item in items:
             p = tf.add_paragraph()
             p.text = f"• {item}"
-            p.font.name = "Inter"
-            p.font.size = Pt(10)
-            p.font.color.rgb = c_slate
             p.space_after = Pt(4)
+            style_para(p, FONT_BODY, 10, c_slate, bold=False)
 
     # -------------------------------------------------------------
     # SLIDE 4: System Architecture & Methodology
@@ -257,11 +240,11 @@ def fill_deck():
     add_card(slide5, Inches(8.8), Inches(2.1), s5_w, s5_h, "Database & Persistence", st3, accent_color=c_green)
 
     st4 = [
-        "TextBee Android SMS Gateway for automated parent alerts",
-        "WhatsApp Click-to-Chat deep links for rich media home practice",
-        "Native device SMS launcher fallback for offline phones"
+        "TextBee Automated SMS Gateway: Single default parent dispatch",
+        "Instant delivery to basic feature phones without app installation",
+        "Deterministic bilingual SMS generation (Gujarati + English)"
     ]
-    add_card(slide5, Inches(0.8), Inches(4.6), s5_w, s5_h, "Parent Messaging & Gateway", st4, accent_color=RGBColor(244, 63, 94))
+    add_card(slide5, Inches(0.8), Inches(4.6), s5_w, s5_h, "Parent Messaging (TextBee)", st4, accent_color=RGBColor(244, 63, 94))
 
     st5 = [
         "Google Gemini 1.5 Flash for natural language diagnostics",
@@ -368,50 +351,47 @@ def fill_deck():
         if not s.has_text_frame:
             continue
         text = s.text_frame.text
-        if "[Leader Name]" in text:
+        if "[Leader Name]" in text or "Shubham Kanani" in text:
             s.text_frame.text = "Shubham Kanani"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(13)
-                p.font.bold = True
-        elif "[Member 2 Name]" in text:
+                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+        elif "[Member 2 Name]" in text or "Team Member 2" in text:
             s.text_frame.text = "Team Member 2"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(13)
-                p.font.bold = True
-        elif "[Member 3 Name]" in text:
+                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+        elif "[Member 3 Name]" in text or "Team Member 3" in text:
             s.text_frame.text = "Team Member 3"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(13)
-                p.font.bold = True
-        elif "[Member 4 Name]" in text:
+                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+        elif "[Member 4 Name]" in text or "Team Member 4" in text:
             s.text_frame.text = "Team Member 4"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(13)
-                p.font.bold = True
+                style_para(p, FONT_HEADING, 13, c_white, bold=True)
         elif "Faculty Mentor: [Prof." in text or "Faculty Mentor:" in text:
             s.text_frame.text = "Faculty Mentor: Dr. / Prof. Faculty Mentor Name"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Plus Jakarta Sans"
-                p.font.color.rgb = c_white
-                p.font.size = Pt(13)
-                p.font.bold = True
-        elif "Department of [Department]" in text:
+                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+        elif "Department of [Department]" in text or "Department of Computer Engineering" in text:
             s.text_frame.text = "Department of Computer Engineering, Gujarat Technological University"
             for p in s.text_frame.paragraphs:
-                p.font.name = "Inter"
-                p.font.color.rgb = c_slate
-                p.font.size = Pt(11)
+                style_para(p, FONT_BODY, 11, c_slate, bold=False)
+
+    # -------------------------------------------------------------
+    # Final Pass: Replace any residual unsupported fonts across ALL slides
+    # -------------------------------------------------------------
+    for slide in prs.slides:
+        for s in slide.shapes:
+            if not s.has_text_frame:
+                continue
+            for p in s.text_frame.paragraphs:
+                if p.font.name in ["Plus Jakarta Sans", "Inter"]:
+                    p.font.name = FONT_HEADING if p.font.bold else FONT_BODY
+                for r in p.runs:
+                    if r.font.name in ["Plus Jakarta Sans", "Inter"]:
+                        r.font.name = FONT_HEADING if (r.font.bold or p.font.bold) else FONT_BODY
 
     prs.save("SFIC 2026 Synopsis Presentation Template.pptx")
-    print("Successfully populated all 8 slides in SFIC 2026 Synopsis Presentation Template.pptx!")
+    print("Successfully populated all 8 slides with universal Arial/Calibri fonts!")
 
 if __name__ == "__main__":
     fill_deck()
