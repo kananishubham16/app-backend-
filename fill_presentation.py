@@ -14,15 +14,19 @@ def fill_deck():
     FONT_HEADING = "Arial"
     FONT_BODY = "Calibri"
 
-    # Colors
+    # Dark background colors (used for Slide 1 dark navy cover)
     c_white = RGBColor(255, 255, 255)
-    c_slate = RGBColor(203, 213, 225)
-    c_slate_dark = RGBColor(148, 163, 184)
+    c_light_slate = RGBColor(203, 213, 225)
     c_orange = RGBColor(234, 88, 12)
-    c_blue = RGBColor(56, 189, 248)
     c_card_bg = RGBColor(30, 41, 59)
     c_card_border = RGBColor(51, 65, 85)
     c_green = RGBColor(34, 197, 94)
+
+    # Light background high-contrast colors (used for Slides 2, 3, 8 which have white/off-white background)
+    c_navy_dark = RGBColor(11, 57, 84)       # Deep professional navy (#0B3954)
+    c_dark_body = RGBColor(30, 41, 59)        # High-contrast charcoal slate (#1E293B)
+    c_dark_muted = RGBColor(51, 65, 85)       # High-contrast secondary slate (#334155)
+    c_deep_blue = RGBColor(2, 132, 199)       # High-contrast ocean blue (#0284C7)
 
     def style_para(p, font_name, size_pt, color_rgb=None, bold=False):
         p.font.name = font_name
@@ -38,7 +42,7 @@ def fill_deck():
                 r.font.color.rgb = color_rgb
 
     # -------------------------------------------------------------
-    # SLIDE 1: Title & Team Metadata
+    # SLIDE 1: Title & Team Metadata (Dark Midnight Navy Background)
     # -------------------------------------------------------------
     slide1 = prs.slides[0]
     for s in slide1.shapes:
@@ -56,7 +60,7 @@ def fill_deck():
         elif "[Provide a crisp one-sentence" in text or "closing foundational learning gaps" in text:
             s.text_frame.text = "A smart tracking and remedial action system closing foundational learning gaps in primary schools through automated sub-topic diagnosis, adaptive quizzes, and bilingual parent-teacher synchronization."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 13, c_slate, bold=False)
+                style_para(p, FONT_BODY, 13, c_light_slate, bold=False)
         elif "[TMXXXXXX]" in text or "TM-SFIC-" in text:
             s.text_frame.text = "TM-SFIC-0060"
             for p in s.text_frame.paragraphs:
@@ -75,7 +79,8 @@ def fill_deck():
                 style_para(p, FONT_HEADING, 12, c_white, bold=True)
 
     # -------------------------------------------------------------
-    # SLIDE 2: Challenge Definition
+    # SLIDE 2: Challenge Definition (Light / White Background)
+    # Text MUST be dark slate (#1E293B / #334155) for high contrast
     # -------------------------------------------------------------
     slide2 = prs.slides[1]
     for s in slide2.shapes:
@@ -85,22 +90,26 @@ def fill_deck():
         if "[Describe the exact bottleneck" in text or "Primary school teachers in Gujarat" in text:
             s.text_frame.text = "Primary school teachers in Gujarat handle 40-50 students across multiple grades with no automated way to detect conceptual sub-topic gaps (e.g. distinguishing overall Math deficiency from a specific borrowing failure in subtraction). Consequently, learning gaps compound undetected until annual summative exams."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 11, c_slate, bold=False)
-        elif "Evidence: [Quantify" in text or "Evidence:" in text:
+                style_para(p, FONT_BODY, 11, c_dark_body, bold=False)
+        elif "Evidence" in text:
             s.text_frame.text = "Evidence & Ground Reality: Over 48% of Grade 3-5 children in rural schools fail basic subtraction or Gujarati reading (ASER/NAS benchmarks). Teachers spend 6-8 manual hours per week collating paper scores without actionable gap-to-remedial activity mapping."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+                style_para(p, FONT_BODY, 10, c_dark_muted, bold=False)
         elif "[Identify primary beneficiaries" in text or "Target Beneficiaries:" in text:
-            s.text_frame.text = "Target Beneficiaries:\n• Primary Students (Grades 1-5): Receive timely, non-stigmatizing micro-practice before conceptual deficits widen.\n• Primary Teachers: Automated diagnosis reduces assessment overhead by 70%.\n• Parents: Overcome literacy barriers via automated Gujarati SMS home-practice updates.\n• Principals & BRCs: Real-time cluster mastery analytics replace delayed paper audits."
-            for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+            s.text_frame.text = "Target Beneficiaries:\n• Primary Students (Grades 1-5): Receive timely, non-stigmatizing micro-practice before deficits widen.\n• Primary Teachers: Automated diagnosis reduces assessment overhead by 70%.\n• Parents: Overcome literacy barriers via automated Gujarati SMS home-practice updates.\n• Principals & BRCs: Real-time cluster mastery analytics replace delayed paper audits."
+            for idx, p in enumerate(s.text_frame.paragraphs):
+                if idx == 0:
+                    style_para(p, FONT_HEADING, 10.5, c_navy_dark, bold=True)
+                else:
+                    style_para(p, FONT_BODY, 9.5, c_dark_body, bold=False)
         elif "Existing Gap: [Explain" in text or "Existing Gap:" in text or "Existing Market Gaps:" in text:
             s.text_frame.text = "Existing Market Gaps: Commercial EdTech (Byju's, Khan Academy) requires high-end smartphones, strong internet, and recurring subscriptions. State administrative portals (e.g. VSK) track macro census data but lack a micro-actionable teacher-student-parent remediation loop."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+                style_para(p, FONT_BODY, 10, c_dark_muted, bold=False)
 
     # -------------------------------------------------------------
-    # SLIDE 3: Solution Approach & Novelty
+    # SLIDE 3: Solution Approach & Novelty (Light / White Background)
+    # Text MUST be dark slate (#1E293B / #334155) for high contrast
     # -------------------------------------------------------------
     slide3 = prs.slides[2]
     for s in slide3.shapes:
@@ -110,26 +119,26 @@ def fill_deck():
         if "[State your proposed digital/hardware" in text or "Learning Setu is a bilingual" in text:
             s.text_frame.text = "Learning Setu is a bilingual, offline-first mobile and web application that automates the complete remedial cycle: Diagnosing sub-topic gaps (<40%), generating targeted remedial activities, verifying recovery via 5-question supervised mini-quizzes, and synchronizing parents in Gujarati."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 11, c_slate, bold=False)
+                style_para(p, FONT_BODY, 11, c_dark_body, bold=False)
         elif "[What makes your approach proprietary" in text or "Closed-Loop Verification:" in text:
             s.text_frame.text = "• Closed-Loop Verification: Remedial tasks are only marked complete when a student passes a targeted mini-quiz (>=70%), preventing unverified check-the-box remediation.\n• Bilingual Ecosystem: 100% Gujarati + English localization across UI and automated SMS alerts.\n• 4-Role Unified Architecture: Teacher, Principal, BRC, and Parent coordinated seamlessly."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+                style_para(p, FONT_BODY, 10, c_dark_body, bold=False)
         elif "[Key engineering advantage" in text or "Deterministic Rule Engine" in text:
             s.text_frame.text = "• Deterministic Rule Engine + Offline SQLite: Functions in zero-connectivity rural classrooms.\n• Hybrid AI Diagnostics: Augments deterministic rules with Google Gemini 1.5 Flash for nuanced pedagogical advice.\n• TextBee SMS Gateway: Auto-dispatches bilingual SMS without parents needing smartphones or app installs."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+                style_para(p, FONT_BODY, 10, c_dark_body, bold=False)
         elif "[Direct societal welfare delivery" in text or "100% open-source, zero recurring" in text:
             s.text_frame.text = "100% open-source, zero recurring software license cost for Gujarat primary schools. Directly accelerates NIPUN Bharat Foundational Literacy and Numeracy (FLN) goals and empowers marginalized parents with transparent, accessible Gujarati progress updates."
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 10.5, c_slate, bold=False)
+                style_para(p, FONT_BODY, 10, c_dark_body, bold=False)
         elif "Video Link : http://" in text or "GitHub & Live Demo:" in text:
             s.text_frame.text = "GitHub & Live Demo: https://github.com/kananishubham16/app (Backend: kananishubham16/app-backend-)"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_HEADING, 10, c_blue, bold=True)
+                style_para(p, FONT_HEADING, 10.5, c_deep_blue, bold=True)
 
     # -------------------------------------------------------------
-    # Helper to add styled cards on slides 4, 5, 6, 7
+    # Helper to add styled dark cards on slides 4, 5, 6, 7
     # -------------------------------------------------------------
     # Clean up any previously added auto shapes (shape_type == 1) on slides 4, 5, 6, 7
     for slide_idx in [3, 4, 5, 6]:
@@ -139,7 +148,7 @@ def fill_deck():
                 sp = sh._element
                 sp.getparent().remove(sp)
 
-    def add_card(slide, left, top, width, height, title, items, badge_text=None, accent_color=c_blue):
+    def add_card(slide, left, top, width, height, title, items, badge_text=None, accent_color=RGBColor(56, 189, 248)):
         shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
         shape.fill.solid()
         shape.fill.fore_color.rgb = c_card_bg
@@ -164,7 +173,7 @@ def fill_deck():
             p = tf.add_paragraph()
             p.text = f"• {item}"
             p.space_after = Pt(4)
-            style_para(p, FONT_BODY, 10, c_slate, bold=False)
+            style_para(p, FONT_BODY, 10, c_light_slate, bold=False)
 
     # -------------------------------------------------------------
     # SLIDE 4: System Architecture & Methodology
@@ -188,7 +197,7 @@ def fill_deck():
         "Separation of remedial attempts from baseline benchmarks",
         "Gemini 1.5 Flash pedagogical diagnostic narratives"
     ]
-    add_card(slide4, Inches(3.8), top_pos, card_w, card_h, "2. Diagnostic Engine", tier2, accent_color=c_blue)
+    add_card(slide4, Inches(3.8), top_pos, card_w, card_h, "2. Diagnostic Engine", tier2, accent_color=RGBColor(56, 189, 248))
 
     tier3 = [
         "Automated mapping: Identified gap -> Targeted activity",
@@ -221,7 +230,7 @@ def fill_deck():
         "Provider state management & clean repository pattern",
         "Dynamic English + Gujarati localization delegates"
     ]
-    add_card(slide5, Inches(0.8), Inches(2.1), s5_w, s5_h, "Client Frontend (Flutter)", st1, accent_color=c_blue)
+    add_card(slide5, Inches(0.8), Inches(2.1), s5_w, s5_h, "Client Frontend (Flutter)", st1, accent_color=RGBColor(56, 189, 248))
 
     st2 = [
         "Python 3.14 + FastAPI async REST architecture",
@@ -258,7 +267,7 @@ def fill_deck():
         "82/82 Flutter automated unit & widget tests passing",
         "Dual-mode architecture: Live REST API with offline Mock fallback"
     ]
-    add_card(slide5, Inches(8.8), Inches(4.6), s5_w, s5_h, "Quality & Feasibility", st6, accent_color=c_blue)
+    add_card(slide5, Inches(8.8), Inches(4.6), s5_w, s5_h, "Quality & Feasibility", st6, accent_color=RGBColor(56, 189, 248))
 
     # -------------------------------------------------------------
     # SLIDE 6: Socio-Economic Impact & Viability
@@ -279,7 +288,7 @@ def fill_deck():
         "1-click diagnostic summaries & auto-generated remedial actions",
         "Frees teachers to focus on individualized student instruction"
     ]
-    add_card(slide6, Inches(4.8), Inches(2.1), s6_w, s6_h, "⏱️ 6+ Hours Saved per Teacher/Wk", imp2, accent_color=c_blue)
+    add_card(slide6, Inches(4.8), Inches(2.1), s6_w, s6_h, "⏱️ 6+ Hours Saved per Teacher/Wk", imp2, accent_color=RGBColor(56, 189, 248))
 
     imp3 = [
         "Gujarati SMS updates bridge the digital divide for rural parents",
@@ -307,7 +316,7 @@ def fill_deck():
         "Parents can ONLY access their own child's diagnostic records",
         "Deterministic scoring prevents arbitrary algorithmic bias"
     ]
-    add_card(slide6, Inches(8.8), Inches(4.6), s6_w, s6_h, "🔒 Ethical & Privacy-First", imp6, accent_color=c_blue)
+    add_card(slide6, Inches(8.8), Inches(4.6), s6_w, s6_h, "🔒 Ethical & Privacy-First", imp6, accent_color=RGBColor(56, 189, 248))
 
     # -------------------------------------------------------------
     # SLIDE 7: Execution Timeline & Roadmap
@@ -332,7 +341,7 @@ def fill_deck():
         "Cluster-level BRC / CRC inspection dashboard deployment",
         "Teacher training workshops conducted via DIET Gandhinagar"
     ]
-    add_card(slide7, Inches(4.8), Inches(2.1), s7_w, s7_h, "Phase 2: District Rollout\n(Months 4 - 8)", p2, accent_color=c_blue)
+    add_card(slide7, Inches(4.8), Inches(2.1), s7_w, s7_h, "Phase 2: District Rollout\n(Months 4 - 8)", p2, accent_color=RGBColor(56, 189, 248))
 
     p3 = [
         "State-wide scale across all 33 districts of Gujarat (32,000+ schools)",
@@ -344,7 +353,8 @@ def fill_deck():
     add_card(slide7, Inches(8.8), Inches(2.1), s7_w, s7_h, "Phase 3: State-Wide Scale\n(Months 9 - 12+)", p3, accent_color=c_green)
 
     # -------------------------------------------------------------
-    # SLIDE 8: Squad Capabilities & Mentorship
+    # SLIDE 8: Squad Capabilities & Mentorship (Light / White Background)
+    # Names MUST be dark navy (#0B3954) for high contrast
     # -------------------------------------------------------------
     slide8 = prs.slides[7]
     for s in slide8.shapes:
@@ -354,27 +364,45 @@ def fill_deck():
         if "[Leader Name]" in text or "Shubham Kanani" in text:
             s.text_frame.text = "Shubham Kanani"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+                style_para(p, FONT_HEADING, 13, c_navy_dark, bold=True)
         elif "[Member 2 Name]" in text or "Team Member 2" in text:
             s.text_frame.text = "Team Member 2"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+                style_para(p, FONT_HEADING, 13, c_navy_dark, bold=True)
         elif "[Member 3 Name]" in text or "Team Member 3" in text:
             s.text_frame.text = "Team Member 3"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+                style_para(p, FONT_HEADING, 13, c_navy_dark, bold=True)
         elif "[Member 4 Name]" in text or "Team Member 4" in text:
             s.text_frame.text = "Team Member 4"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+                style_para(p, FONT_HEADING, 13, c_navy_dark, bold=True)
         elif "Faculty Mentor: [Prof." in text or "Faculty Mentor:" in text:
             s.text_frame.text = "Faculty Mentor: Dr. / Prof. Faculty Mentor Name"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_HEADING, 13, c_white, bold=True)
+                style_para(p, FONT_HEADING, 12, c_navy_dark, bold=True)
         elif "Department of [Department]" in text or "Department of Computer Engineering" in text:
             s.text_frame.text = "Department of Computer Engineering, Gujarat Technological University"
             for p in s.text_frame.paragraphs:
-                style_para(p, FONT_BODY, 11, c_slate, bold=False)
+                style_para(p, FONT_BODY, 11, c_dark_muted, bold=False)
+
+    # -------------------------------------------------------------
+    # Contrast Safeguard for Slides 2, 3, 8 (White/Light Backgrounds)
+    # Ensure no residual light grey (#CBD5E1) or white text exists
+    # -------------------------------------------------------------
+    for slide_idx in [1, 2, 7]:  # Slides 2, 3, 8 (0-indexed)
+        slide_obj = prs.slides[slide_idx]
+        for s in slide_obj.shapes:
+            if not s.has_text_frame:
+                continue
+            for p in s.text_frame.paragraphs:
+                if p.font.color and p.font.color.type == 1:
+                    if p.font.color.rgb in [c_white, c_light_slate]:
+                        p.font.color.rgb = c_navy_dark if p.font.bold else c_dark_body
+                for r in p.runs:
+                    if r.font.color and r.font.color.type == 1:
+                        if r.font.color.rgb in [c_white, c_light_slate]:
+                            r.font.color.rgb = c_navy_dark if (r.font.bold or p.font.bold) else c_dark_body
 
     # -------------------------------------------------------------
     # Final Pass: Replace any residual unsupported fonts across ALL slides
@@ -390,8 +418,15 @@ def fill_deck():
                     if r.font.name in ["Plus Jakarta Sans", "Inter"]:
                         r.font.name = FONT_HEADING if (r.font.bold or p.font.bold) else FONT_BODY
 
-    prs.save("SFIC 2026 Synopsis Presentation Template.pptx")
-    print("Successfully populated all 8 slides with universal Arial/Calibri fonts!")
+    out_paths = ["SFIC 2026 Synopsis Presentation Template.pptx", "SFIC 2026 Synopsis Learning Setu.pptx"]
+    for out_path in out_paths:
+        try:
+            prs.save(out_path)
+            print(f"Successfully saved: {out_path}")
+        except PermissionError:
+            print(f"Notice: {out_path} is currently locked by PowerPoint. Please close PowerPoint to overwrite it.")
+        except Exception as e:
+            print(f"Error saving {out_path}: {e}")
 
 if __name__ == "__main__":
     fill_deck()
