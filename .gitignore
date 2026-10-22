@@ -1,0 +1,24 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.sqlite3
+
+# Environment & IDE
+.env
+.idea/
+.vscode/
+*.swp
