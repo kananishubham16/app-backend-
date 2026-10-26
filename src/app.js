@@ -33,6 +33,7 @@ app.use(
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map((o) => o.trim())
   : [
+      'https://kananishubham16.github.io',
       'https://chipper-syrniki-ba897a.netlify.app',
       'http://localhost:3000',
       'http://localhost:5000',
@@ -45,7 +46,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, Postman, file:// in local browser)
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*') || origin.endsWith('.netlify.app')) {
+      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*') || origin.endsWith('.netlify.app') || origin.endsWith('.github.io')) {
         return callback(null, true);
       }
       return callback(null, true); // Dev-friendly fallback
