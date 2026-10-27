@@ -37,9 +37,17 @@ exports.getDoubts = async (req, res, next) => {
 
 // @desc    Submit a new parent doubt
 // @route   POST /api/v1/doubts
-// @access  Public / Authenticated
+// @access  Public (Parent) / Authenticated Parent
 exports.createDoubt = async (req, res, next) => {
   try {
+    // Strictly restrict question submission to parents; school staff (teachers, principals, etc.) cannot submit on parents' behalf
+    if (req.user && req.user.role && req.user.role !== 'parent') {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: Only parents are permitted to submit questions to teachers.'
+      });
+    }
+
     const { studentId, subject, category, question, parentName, parentEmail } = req.body;
 
     if (!studentId || !subject || !question) {
