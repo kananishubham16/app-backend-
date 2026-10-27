@@ -18,6 +18,8 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
+const brcRoutes = require('./routes/brcRoutes');
+const ThresholdSetting = require('./models/ThresholdSetting');
 
 const app = express();
 
@@ -98,6 +100,7 @@ app.use('/api/v1/doubts', doubtRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/brc', brcRoutes);
 
 // 7. Backward Compatibility: Aliases for existing client-side calls
 app.use('/api/auth', authRoutes);
@@ -108,6 +111,23 @@ app.use('/api/doubts', doubtRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/brc', brcRoutes);
+
+// Compatibility endpoints for thresholds
+app.get(['/api/thresholds', '/api/v1/thresholds'], async (req, res) => {
+  const setting = await ThresholdSetting.findOne({ key: 'global_thresholds' });
+  res.status(200).json(setting ? { excellent: setting.excellent, average: setting.average } : { excellent: 75, average: 40 });
+});
+
+app.post(['/api/thresholds', '/api/v1/thresholds'], async (req, res) => {
+  const { excellent, average } = req.body || {};
+  const updated = await ThresholdSetting.findOneAndUpdate(
+    { key: 'global_thresholds' },
+    { excellent: Number(excellent) || 75, average: Number(average) || 40 },
+    { upsert: true, new: true }
+  );
+  res.status(200).json({ success: true, thresholds: { excellent: updated.excellent, average: updated.average } });
+});
 
 // 8. Serve Frontend Static Files (Both from public folder and parent directory if present)
 const publicPath = path.join(__dirname, '../public');
