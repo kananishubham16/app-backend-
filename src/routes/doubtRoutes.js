@@ -11,8 +11,8 @@ const { verifyToken, requireRole, optionalAuth } = require('../middleware/auth')
 
 router.get('/', optionalAuth, getDoubts);
 router.post('/', createDoubt);
-router.put('/:id/reply', verifyToken, requireRole('teacher', 'admin'), replyToDoubt);
-router.put('/:id/status', verifyToken, requireRole('teacher', 'admin'), updateDoubtStatus);
+router.put('/:id/reply', optionalAuth, replyToDoubt);
+router.put('/:id/status', optionalAuth, updateDoubtStatus);
 router.delete('/:id', verifyToken, requireRole('admin'), deleteDoubt);
 
 module.exports = router;

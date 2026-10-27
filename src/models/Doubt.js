@@ -58,6 +58,10 @@ const doubtSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
+    repliedByName: {
+      type: String,
+      default: null
+    },
     repliedAt: {
       type: Date
     },
@@ -74,12 +78,8 @@ const doubtSchema = new mongoose.Schema(
   }
 );
 
-doubtSchema.set('toJSON', {
-  virtuals: true,
-  transform: (doc, ret) => {
-    ret.id = ret.doubtId;
-    return ret;
-  }
-});
+doubtSchema.index({ studentId: 1, createdAt: -1 });
+doubtSchema.index({ status: 1 });
+doubtSchema.index({ parentEmail: 1 });
 
 module.exports = mongoose.model('Doubt', doubtSchema);

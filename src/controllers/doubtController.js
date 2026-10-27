@@ -110,7 +110,14 @@ exports.replyToDoubt = async (req, res, next) => {
     doubt.reply = reply.trim();
     doubt.status = 'Replied';
     doubt.repliedAt = new Date();
-    doubt.repliedBy = req.user ? req.user._id : null;
+    doubt.repliedBy = (req.user && req.user._id) ? req.user._id : null;
+    if (req.body.repliedByName || req.body.repliedBy) {
+      doubt.repliedByName = req.body.repliedByName || (typeof req.body.repliedBy === 'string' ? req.body.repliedBy : 'Class Teacher');
+    } else if (req.user && req.user.name) {
+      doubt.repliedByName = req.user.name;
+    } else {
+      doubt.repliedByName = 'Class Teacher';
+    }
 
     await doubt.save();
     await logAction(req, 'DOUBT_REPLIED', { doubtId: doubt.doubtId, studentId: doubt.studentId });

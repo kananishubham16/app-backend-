@@ -108,6 +108,23 @@ exports.addTraining = (req, res) => {
   res.status(201).json({ success: true, training: body });
 };
 
+exports.updateTraining = (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  const trainings = readData(trainingsFile);
+  const idx = trainings.findIndex((t) => t.id === id);
+
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Training not found' });
+  }
+
+  for (const [k, v] of Object.entries(body)) {
+    trainings[idx][k] = v;
+  }
+  writeData(trainingsFile, trainings);
+  res.status(200).json({ success: true, training: trainings[idx] });
+};
+
 // --- Directives ---
 exports.getDirectives = (req, res) => {
   const directives = readData(directivesFile);

@@ -8,6 +8,7 @@ const {
   addInspection,
   getTrainings,
   addTraining,
+  updateTraining,
   getDirectives,
   addDirective,
   updateDirective
@@ -25,6 +26,7 @@ router.post('/inspections', addInspection);
 // Trainings
 router.get('/trainings', getTrainings);
 router.post('/trainings', addTraining);
+router.put('/trainings/:id', updateTraining);
 
 // Directives
 router.get('/directives', getDirectives);
