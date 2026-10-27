@@ -19,6 +19,7 @@ const settingsRoutes = require('./routes/settingsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
 const brcRoutes = require('./routes/brcRoutes');
+const holisticRoutes = require('./routes/holisticRoutes');
 const ThresholdSetting = require('./models/ThresholdSetting');
 
 const app = express();
@@ -101,6 +102,7 @@ app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/brc', brcRoutes);
+app.use('/api/v1/holistic', holisticRoutes);
 
 // 7. Backward Compatibility: Aliases for existing client-side calls
 app.use('/api/auth', authRoutes);
@@ -112,6 +114,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/brc', brcRoutes);
+app.use('/api/holistic', holisticRoutes);
 
 // Compatibility endpoints for thresholds
 app.get(['/api/thresholds', '/api/v1/thresholds'], async (req, res) => {
