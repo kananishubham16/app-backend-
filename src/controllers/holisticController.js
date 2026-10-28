@@ -80,18 +80,22 @@ exports.getHolisticByStudent = async (req, res, next) => {
 };
 
 /**
- * Award 1-tap Micro Shout-out Badge
+ * Award 1-tap Micro Shout-out Badge (Supports single badgeKey or multiple badgeKeys)
  * POST /api/v1/holistic/:studentId/badge
  */
 exports.awardBadge = async (req, res, next) => {
   try {
     const { studentId } = req.params;
-    const { badgeKey, title, titleGu, iconName, awardedBy, note } = req.body;
+    const { badgeKey, badgeKeys, title, titleGu, iconName, awardedBy, note } = req.body;
 
-    if (!badgeKey) {
+    const keysToAward = Array.isArray(badgeKeys) && badgeKeys.length > 0
+      ? badgeKeys
+      : (badgeKey ? [badgeKey] : []);
+
+    if (keysToAward.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'badgeKey is required'
+        message: 'badgeKey or badgeKeys array is required'
       });
     }
 
@@ -100,33 +104,37 @@ exports.awardBadge = async (req, res, next) => {
       evaluation = new HolisticEvaluation({ studentId });
     }
 
-    const template = BADGE_TEMPLATES[badgeKey] || {};
-    const newBadge = {
-      id: `b_${Date.now()}`,
-      badgeKey,
-      title: title || template.title || 'Positive Shout-Out',
-      titleGu: titleGu || template.titleGu || 'સકારાત્મક પ્રોત્સાહન',
-      iconName: iconName || template.iconName || 'star',
-      awardedBy: awardedBy || 'Teacher',
-      awardedAt: new Date(),
-      note: note || 'Recognized for excellent positive attitude in class.'
-    };
+    const createdBadges = [];
+    keysToAward.forEach((key, index) => {
+      const template = BADGE_TEMPLATES[key] || {};
+      const newBadge = {
+        id: `b_${Date.now()}_${index}`,
+        badgeKey: key,
+        title: (keysToAward.length === 1 && title) ? title : (template.title || 'Positive Shout-Out'),
+        titleGu: (keysToAward.length === 1 && titleGu) ? titleGu : (template.titleGu || 'સકારાત્મક પ્રોત્સાહન'),
+        iconName: (keysToAward.length === 1 && iconName) ? iconName : (template.iconName || 'star'),
+        awardedBy: awardedBy || 'Teacher',
+        awardedAt: new Date(Date.now() + index * 10),
+        note: note || 'Recognized for excellent positive attitude in class.'
+      };
 
-    evaluation.badges.unshift(newBadge);
+      createdBadges.push(newBadge);
+      evaluation.badges.unshift(newBadge);
 
-    // Reinforce trait score according to badge type
-    if (badgeKey === 'high_effort') {
-      evaluation.practiceGrit = Math.min(100, evaluation.practiceGrit + 3.0);
-    } else if (badgeKey === 'curious_mind') {
-      evaluation.engagementCuriosity = Math.min(100, evaluation.engagementCuriosity + 4.0);
-    } else if (badgeKey === 'team_player') {
-      evaluation.teamworkEmpathy = Math.min(100, evaluation.teamworkEmpathy + 4.0);
-    } else if (badgeKey === 'creative_thinker') {
-      evaluation.engagementCuriosity = Math.min(100, evaluation.engagementCuriosity + 3.0);
-      evaluation.coCurricular = Math.min(100, evaluation.coCurricular + 3.0);
-    } else if (badgeKey === 'active_sport') {
-      evaluation.coCurricular = Math.min(100, evaluation.coCurricular + 5.0);
-    }
+      // Reinforce trait score according to badge type
+      if (key === 'high_effort') {
+        evaluation.practiceGrit = Math.min(100, evaluation.practiceGrit + 3.0);
+      } else if (key === 'curious_mind') {
+        evaluation.engagementCuriosity = Math.min(100, evaluation.engagementCuriosity + 4.0);
+      } else if (key === 'team_player') {
+        evaluation.teamworkEmpathy = Math.min(100, evaluation.teamworkEmpathy + 4.0);
+      } else if (key === 'creative_thinker') {
+        evaluation.engagementCuriosity = Math.min(100, evaluation.engagementCuriosity + 3.0);
+        evaluation.coCurricular = Math.min(100, evaluation.coCurricular + 3.0);
+      } else if (key === 'active_sport') {
+        evaluation.coCurricular = Math.min(100, evaluation.coCurricular + 5.0);
+      }
+    });
 
     if (note) {
       evaluation.teacherNotes = note;
@@ -136,8 +144,9 @@ exports.awardBadge = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: 'Badge successfully awarded!',
-      data: evaluation
+      message: `${keysToAward.length} badge(s) successfully awarded!`,
+      data: evaluation,
+      awardedBadges: createdBadges
     });
   } catch (error) {
     next(error);
